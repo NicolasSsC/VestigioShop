@@ -1,94 +1,124 @@
+// src/app/page.tsx
+"use client";
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
+import { productService } from '@/services/productService';
+import { Producto } from '@/types/product';
+import { Loader2, ArrowRight, ShieldCheck, Zap, Package } from 'lucide-react';
 
-export default function Home() {
+export default function HomePage() {
+  const [destacados, setDestacados] = useState<Producto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Cargamos dinámicamente algunos productos para la sección "Destacados"
+  useEffect(() => {
+    const fetchDestacados = async () => {
+      setIsLoading(true);
+      const data = await productService.getProducts();
+      // Tomamos 4 productos específicos o los primeros 4 para exhibir
+      setDestacados(data.slice(0, 4));
+      setIsLoading(false);
+    };
+    fetchDestacados();
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f1113] text-white">
-      {/* Barra de Navegación */}
+    <div className="min-h-screen flex flex-col bg-vestigio-bg text-white">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-10 w-full">
-        {/* Título Principal tipo Hero */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-wider text-[#42938a] mb-2 uppercase">
-            DOMINA EL JUEGO
+      <main className="flex-1 w-full">
+        
+        {/* 1. HERO SECTION (Cabecera Principal) */}
+        <section className="relative py-20 md:py-32 px-6 text-center max-w-5xl mx-auto flex flex-col items-center">
+          {/* Un toque de luz de fondo (Glow) para estética premium */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-vestigio-primary/10 blur-[100px] rounded-full -z-10 pointer-events-none"></div>
+
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-vestigio-primary uppercase mb-6 drop-shadow-lg">
+            Domina el Juego
           </h1>
-          <p className="text-gray-400 text-sm md:text-base tracking-wide">
-            La tecnología que permanece
+          <p className="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-12 max-w-2xl">
+            La tecnología que permanece. Periféricos premium para llevar tu setup al siguiente nivel.
           </p>
-        </div>
 
-        {/* Sección Superior: Teclado y Ratón Destacados */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
-          <div className="bg-[#16191c] border border-[#2a2e33] rounded-xl p-6 flex flex-col items-center">
-            <div className="h-44 flex items-center justify-center mb-4">
-              <span className="text-gray-500 text-xs">[Imagen Teclado Mecánico V1]</span>
-            </div>
-            <h2 className="text-lg font-bold text-white mb-1">TECLADO MECÁNICO V1</h2>
-            <p className="text-gray-400 text-xs mb-1">Teclado</p>
-            <p className="text-gray-500 text-xs text-center mb-6">Switches Táctiles, RGB Adaptativa, Diseño de Aluminio</p>
-            <div className="w-full mt-auto">
-              <button className="w-full py-2.5 rounded-full border border-[#42938a] text-[#42938a] text-xs font-bold tracking-wider hover:bg-[#42938a]/10 transition-colors">
-                VER PRODUCTO
-              </button>
-            </div>
-          </div>
+          <Link 
+            href="/productos" 
+            className="inline-flex items-center gap-3 bg-vestigio-primary text-black px-10 py-4 rounded-full font-extrabold uppercase tracking-widest hover:bg-vestigio-primaryHover transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(66,147,138,0.4)]"
+          >
+            Explorar Catálogo <ArrowRight className="w-5 h-5" />
+          </Link>
+        </section>
 
-          <div className="bg-[#16191c] border border-[#2a2e33] rounded-xl p-6 flex flex-col items-center">
-            <div className="h-44 flex items-center justify-center mb-4">
-              <span className="text-gray-500 text-xs">[Imagen Ratón Gamer R2]</span>
+        {/* 2. SECCIÓN DE BENEFICIOS (Confianza) */}
+        <section className="border-y border-vestigio-border bg-vestigio-surface/50">
+          <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-vestigio-border">
+            <div className="flex flex-col items-center pt-4 md:pt-0">
+              <Package className="w-8 h-8 text-vestigio-primary mb-3" />
+              <h3 className="font-bold text-white mb-1">Stock Local Inmediato</h3>
+              <p className="text-sm text-gray-400">Envíos rápidos en Bogotá y Soacha</p>
             </div>
-            <h2 className="text-lg font-bold text-white mb-1">RATÓN GAMER R2</h2>
-            <p className="text-gray-400 text-xs mb-1">Ratón</p>
-            <p className="text-gray-500 text-xs text-center mb-6">Sensor de 26k DPI, 11 Botones Programables</p>
-            <div className="w-full mt-auto">
-              <button className="w-full py-2.5 rounded-full bg-[#42938a] text-black text-xs font-bold tracking-wider hover:bg-[#33746d] transition-colors">
-                AGREGAR AL CARRITO
-              </button>
+            <div className="flex flex-col items-center pt-4 md:pt-0">
+              <ShieldCheck className="w-8 h-8 text-vestigio-primary mb-3" />
+              <h3 className="font-bold text-white mb-1">Garantía Asegurada</h3>
+              <p className="text-sm text-gray-400">Productos testeados y confiables</p>
             </div>
-          </div>
-        </div>
-
-        {/* Sección Inferior: Destacados del Mes */}
-        <section className="mb-16">
-          <div className="text-center mb-8">
-            <h2 className="text-xl md:text-2xl font-bold tracking-widest text-white uppercase">
-              DESTACADOS DEL MES
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ProductCard 
-              title="AURICULARES V3" 
-              category="Auriculares" 
-              description="Switches Táctiles, RGB Adaptativa, Diseño de Aluminio" 
-              price="$25.00" 
-              imageSrc="/path-to-image.png" 
-            />
-            <ProductCard 
-              title="ALFOMBRILLA V4" 
-              category="Alfombrilla" 
-              description="Alfombrilla de alta calidad, Antideslizante, Micro de alta precisión" 
-              price="$26.00" 
-              imageSrc="/path-to-image.png" 
-            />
-            <ProductCard 
-              title="ALFOMBRILLA V5" 
-              category="Alfombrilla" 
-              description="Sensor de 26k DPI, 11 RGB Adaptativa, Diseño de Aluminio" 
-              price="$24.00" 
-              imageSrc="/path-to-image.png" 
-              isSelected={true} 
-            />
-            <ProductCard 
-              title="RATÓN GAMER R2" 
-              category="Ratón" 
-              description="Sensor de 26k DPI, 11 Botones Programables" 
-              price="$25.00" 
-              imageSrc="/path-to-image.png" 
-            />
+            <div className="flex flex-col items-center pt-4 md:pt-0">
+              <Zap className="w-8 h-8 text-vestigio-primary mb-3" />
+              <h3 className="font-bold text-white mb-1">Alta Competitividad</h3>
+              <p className="text-sm text-gray-400">Selección experta con la mejor relación calidad-precio</p>
+            </div>
           </div>
         </section>
+
+        {/* 3. SECCIÓN DESTACADOS DEL MES */}
+        <section className="py-20 px-6 max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-2xl md:text-4xl font-bold tracking-wider uppercase text-white mb-2">
+                Destacados del Mes
+              </h2>
+              <p className="text-gray-400 text-sm md:text-base">Los favoritos de nuestra comunidad.</p>
+            </div>
+            <Link href="/productos" className="text-vestigio-primary text-sm font-bold hover:underline hidden sm:flex items-center gap-1 transition-all">
+              Ver todos <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {isLoading ? (
+            <div className="w-full py-20 flex flex-col items-center justify-center">
+              <Loader2 className="w-10 h-10 text-vestigio-primary animate-spin mb-4" />
+              <p className="text-gray-400 font-medium tracking-wide">Cargando destacados...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {destacados.map((prod) => (
+                <Link href={`/productos/${prod.id}`} key={prod.id} className="block group h-full">
+                  <ProductCard
+                    title={prod.title}
+                    category={prod.category}
+                    description={prod.description}
+                    price={`$${prod.price.toFixed(2)}`}
+                    imageSrc={prod.imageSrc}
+                    hasButton={true}
+                    buttonText="AGREGAR AL CARRITO"
+                    buttonVariant="primary"
+                    isSelected={prod.isNew}
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Botón ver todos para móvil */}
+          <div className="mt-10 text-center sm:hidden">
+            <Link href="/productos" className="inline-flex items-center justify-center w-full bg-vestigio-surface border border-vestigio-border text-white px-6 py-3 rounded-xl font-bold hover:bg-vestigio-border transition-colors">
+              Ver todo el catálogo
+            </Link>
+          </div>
+        </section>
+
       </main>
     </div>
   );
