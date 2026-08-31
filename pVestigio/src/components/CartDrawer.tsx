@@ -1,3 +1,4 @@
+// src/components/CartDrawer.tsx
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -5,17 +6,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { useUIStore } from '@/store/useUIStore'; // NUEVO: Importamos el UI Store
 
 export default function CartDrawer() {
-  const { 
-    cart, 
-    isCartOpen, 
-    closeCart, 
-    removeFromCart, 
-    updateQuantity, 
-    getTotalPrice, 
-    getTotalItems 
-  } = useCartStore();
+  // 1. Extraemos estado de DATOS
+  const cart = useCartStore((state) => state.cart);
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
+  const getTotalItems = useCartStore((state) => state.getTotalItems);
+  
+  // 2. Extraemos estado de UI
+  const isCartOpen = useUIStore((state) => state.isCartOpen);
+  const closeCart = useUIStore((state) => state.closeCart);
   
   const [mounted, setMounted] = useState(false);
 
@@ -43,7 +46,7 @@ export default function CartDrawer() {
       {/* Overlay oscuro de fondo */}
       {isCartOpen && (
         <div 
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity animate-fadeIn"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity animate-fadeIn cursor-pointer"
           onClick={closeCart}
           aria-hidden="true"
         />
@@ -66,7 +69,7 @@ export default function CartDrawer() {
           </h2>
           <button 
             onClick={closeCart}
-            className="p-2 rounded-full text-gray-400 hover:text-[#42938a] hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-full text-gray-400 hover:text-[#42938a] hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-[#42938a]"
             aria-label="Cerrar carrito"
           >
             <X className="w-5 h-5" />
@@ -96,7 +99,7 @@ export default function CartDrawer() {
               {cart.map((item) => (
                 <li key={item.id} className="flex gap-4 p-4 bg-[#16191c] border border-gray-800/80 rounded-2xl relative group">
                   {/* Imagen miniatura */}
-                  <div className="w-20 h-20 bg-[#0f1113] rounded-xl border border-gray-800 p-2 flex-shrink-0 relative flex items-center justify-center">
+                  <div className="w-20 h-20 bg-[#0f1113] rounded-xl border border-gray-800 p-2 flex-shrink-0 relative flex items-center justify-center overflow-hidden">
                     <Image 
                       src={item.imageSrc} 
                       alt={item.title} 
@@ -143,9 +146,9 @@ export default function CartDrawer() {
                         </button>
                       </div>
 
-                      {/* Precio total por item */}
+                      {/* Precio total por item (Corregido a formato COP) */}
                       <span className="font-extrabold text-[#42938a] text-sm">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ${(item.price * item.quantity).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -160,7 +163,10 @@ export default function CartDrawer() {
           <div className="border-t border-gray-800 bg-[#16191c] p-6 space-y-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400 font-medium">Subtotal estimado</span>
-              <span className="text-xl font-extrabold text-white">${getTotalPrice().toFixed(2)}</span>
+              {/* Precio Total (Corregido a formato COP) */}
+              <span className="text-xl font-extrabold text-white">
+                ${getTotalPrice().toLocaleString()} COP
+              </span>
             </div>
             
             <Link 

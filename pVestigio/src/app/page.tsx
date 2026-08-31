@@ -1,124 +1,53 @@
 // src/app/page.tsx
-"use client";
+// ARCHIVO CORREGIDO: Ahora es un Server Component (Optimizado para SEO y carga rápida)
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
-import { productService } from '@/services/productService';
-import { Producto } from '@/types/product';
-import { Loader2, ArrowRight, ShieldCheck, Zap, Package } from 'lucide-react';
+import { mockInventory } from '@/data/mockInventory';
 
 export default function HomePage() {
-  const [destacados, setDestacados] = useState<Producto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Cargamos dinámicamente algunos productos para la sección "Destacados"
-  useEffect(() => {
-    const fetchDestacados = async () => {
-      setIsLoading(true);
-      const data = await productService.getProducts();
-      // Tomamos 4 productos específicos o los primeros 4 para exhibir
-      setDestacados(data.slice(0, 4));
-      setIsLoading(false);
-    };
-    fetchDestacados();
-  }, []);
+  const productosDestacados = mockInventory.slice(0, 4);
 
   return (
-    <div className="min-h-screen flex flex-col bg-vestigio-bg text-white">
+    <div className="min-h-screen flex flex-col bg-[#0f1113] text-white">
       <Navbar />
-
-      <main className="flex-1 w-full">
-        
-        {/* 1. HERO SECTION (Cabecera Principal) */}
-        <section className="relative py-20 md:py-32 px-6 text-center max-w-5xl mx-auto flex flex-col items-center">
-          {/* Un toque de luz de fondo (Glow) para estética premium */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-vestigio-primary/10 blur-[100px] rounded-full -z-10 pointer-events-none"></div>
-
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-vestigio-primary uppercase mb-6 drop-shadow-lg">
-            Domina el Juego
+      
+      <main className="flex-1">
+        {/* HERO SECTION */}
+        <section className="relative px-6 py-24 md:py-32 flex flex-col items-center justify-center text-center border-b border-gray-800 bg-[#16191c]/50">
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-6 text-white">
+            Domina el <span className="text-[#42938a]">Juego</span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 font-light tracking-wide mb-12 max-w-2xl">
-            La tecnología que permanece. Periféricos premium para llevar tu setup al siguiente nivel.
+          <p className="text-lg text-gray-400 max-w-2xl mb-10">
+            Equipamiento de alto rendimiento para jugadores exigentes. Descubre nuestra nueva colección y lleva tu setup al siguiente nivel.
           </p>
-
           <Link 
             href="/productos" 
-            className="inline-flex items-center gap-3 bg-vestigio-primary text-black px-10 py-4 rounded-full font-extrabold uppercase tracking-widest hover:bg-vestigio-primaryHover transition-all duration-300 transform hover:scale-105 shadow-[0_0_20px_rgba(66,147,138,0.4)]"
+            className="bg-[#42938a] text-black font-black uppercase tracking-widest px-8 py-4 rounded-xl hover:bg-[#357a72] transition-transform transform hover:-translate-y-1 inline-flex items-center justify-center"
           >
-            Explorar Catálogo <ArrowRight className="w-5 h-5" />
+            Ver Catálogo Completo
           </Link>
         </section>
 
-        {/* 2. SECCIÓN DE BENEFICIOS (Confianza) */}
-        <section className="border-y border-vestigio-border bg-vestigio-surface/50">
-          <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-vestigio-border">
-            <div className="flex flex-col items-center pt-4 md:pt-0">
-              <Package className="w-8 h-8 text-vestigio-primary mb-3" />
-              <h3 className="font-bold text-white mb-1">Stock Local Inmediato</h3>
-              <p className="text-sm text-gray-400">Envíos rápidos en Bogotá y Soacha</p>
-            </div>
-            <div className="flex flex-col items-center pt-4 md:pt-0">
-              <ShieldCheck className="w-8 h-8 text-vestigio-primary mb-3" />
-              <h3 className="font-bold text-white mb-1">Garantía Asegurada</h3>
-              <p className="text-sm text-gray-400">Productos testeados y confiables</p>
-            </div>
-            <div className="flex flex-col items-center pt-4 md:pt-0">
-              <Zap className="w-8 h-8 text-vestigio-primary mb-3" />
-              <h3 className="font-bold text-white mb-1">Alta Competitividad</h3>
-              <p className="text-sm text-gray-400">Selección experta con la mejor relación calidad-precio</p>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. SECCIÓN DESTACADOS DEL MES */}
-        <section className="py-20 px-6 max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
+        {/* PRODUCTOS DESTACADOS */}
+        <section className="max-w-7xl mx-auto px-6 py-20 w-full">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
             <div>
-              <h2 className="text-2xl md:text-4xl font-bold tracking-wider uppercase text-white mb-2">
-                Destacados del Mes
-              </h2>
-              <p className="text-gray-400 text-sm md:text-base">Los favoritos de nuestra comunidad.</p>
+              <h2 className="text-3xl font-black uppercase tracking-tight text-white mb-2">Destacados del Mes</h2>
+              <p className="text-gray-400">Los periféricos más buscados por la comunidad.</p>
             </div>
-            <Link href="/productos" className="text-vestigio-primary text-sm font-bold hover:underline hidden sm:flex items-center gap-1 transition-all">
-              Ver todos <ArrowRight className="w-4 h-4" />
+            <Link href="/productos" className="text-[#42938a] font-bold hover:underline flex items-center gap-2">
+              Ver todos &rarr;
             </Link>
           </div>
 
-          {isLoading ? (
-            <div className="w-full py-20 flex flex-col items-center justify-center">
-              <Loader2 className="w-10 h-10 text-vestigio-primary animate-spin mb-4" />
-              <p className="text-gray-400 font-medium tracking-wide">Cargando destacados...</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {destacados.map((prod) => (
-                <Link href={`/productos/${prod.id}`} key={prod.id} className="block group h-full">
-                  <ProductCard
-                    title={prod.title}
-                    category={prod.category}
-                    description={prod.description}
-                    price={`$${prod.price.toFixed(2)}`}
-                    imageSrc={prod.imageSrc}
-                    hasButton={true}
-                    buttonText="AGREGAR AL CARRITO"
-                    buttonVariant="primary"
-                    isSelected={prod.isNew}
-                  />
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {/* Botón ver todos para móvil */}
-          <div className="mt-10 text-center sm:hidden">
-            <Link href="/productos" className="inline-flex items-center justify-center w-full bg-vestigio-surface border border-vestigio-border text-white px-6 py-3 rounded-xl font-bold hover:bg-vestigio-border transition-colors">
-              Ver todo el catálogo
-            </Link>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {productosDestacados.map((prod) => (
+              <ProductCard key={prod.id} product={prod} buttonText="AÑADIR" />
+            ))}
           </div>
         </section>
-
       </main>
     </div>
   );

@@ -1,20 +1,15 @@
+// src/services/productService.ts
 import { Producto } from '../types/product';
-import { INVENTARIO } from '../data/mockInventory';
+import { mockInventory } from '../data/mockInventory';
 
 export const productService = {
-  getProducts: async (): Promise<Producto[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(INVENTARIO);
-      }, 500);
-    });
+  // Obtener todos los productos del inventario centralizado
+  async getProducts(): Promise<Producto[]> {
+    return mockInventory;
   },
 
-  getProductById: async (id: string): Promise<Producto | undefined> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(INVENTARIO.find((prod) => prod.id === id));
-      }, 500);
-    });
-  }
+  // Obtener un producto específico por su ID
+  async getProductById(id: string): Promise<Producto | undefined> {
+    return mockInventory.find((product: Producto) => product.id === id);
+  },
 };
