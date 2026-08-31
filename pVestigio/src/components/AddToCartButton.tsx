@@ -1,9 +1,9 @@
-// src/components/AddToCartButton.tsx
 "use client";
 
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { Producto } from '@/types/product';
+import { toast } from 'sonner'; // 1. NUEVO: Importamos toast
 
 interface AddToCartButtonProps {
   product: Producto;
@@ -12,9 +12,21 @@ interface AddToCartButtonProps {
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const addToCart = useCartStore((state) => state.addToCart);
 
+  // 2. NUEVO: Función manejadora para el carrito y el feedback visual
+  const handleAddToCart = () => {
+    addToCart(product);
+    
+    toast.success('Agregado al carrito', {
+      description: product.title,
+      style: {
+        borderColor: '#42938a',
+      }
+    });
+  };
+
   return (
     <button
-      onClick={() => addToCart(product)}
+      onClick={handleAddToCart}
       disabled={product.stock === 0}
       className={`w-full py-4 rounded-xl font-black tracking-widest flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 ${
         product.stock === 0

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import CartDrawer from "@/components/CartDrawer"; // 1. Importamos el Cart Drawer global
+import CartDrawer from "@/components/CartDrawer";
+import { Toaster } from "sonner"; // 1. NUEVO: Importamos el Toaster
 import "./globals.css";
 
 // Fuentes optimizadas por Next.js
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 2. Metadatos avanzados para SEO y Redes Sociales (Open Graph)
+// Metadatos avanzados para SEO y Redes Sociales (Open Graph)
 export const metadata: Metadata = {
   title: {
     template: "%s | Vestigio",
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
   },
 };
 
-// 3. Configuración del Viewport (Responsive y color de navegador en móviles)
+// Configuración del Viewport (Responsive y color de navegador en móviles)
 export const viewport: Viewport = {
   themeColor: "#0f1113",
   width: "device-width",
@@ -49,7 +50,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-// 4. Tipado estricto estándar de React / Next.js
+// Tipado estricto estándar de React / Next.js
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,8 +66,20 @@ export default function RootLayout({
         {/* Renderizado de las vistas principales */}
         {children}
 
-        {/* 5. Cart Drawer global inyectado para que esté disponible en toda la app */}
+        {/* Cart Drawer global inyectado para que esté disponible en toda la app */}
         <CartDrawer />
+        
+        {/* 2. NUEVO: Configuración del Toaster a nivel global estilizado para el tema oscuro */}
+        <Toaster 
+          position="bottom-right" 
+          toastOptions={{
+            style: {
+              background: '#16191c',
+              border: '1px solid #1f2937', // border-gray-800 de Tailwind
+              color: '#fff',
+            },
+          }}
+        />
         
       </body>
     </html>

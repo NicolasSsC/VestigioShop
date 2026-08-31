@@ -1,4 +1,3 @@
-// src/components/CartDrawer.tsx
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -6,28 +5,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
-import { useUIStore } from '@/store/useUIStore'; // NUEVO: Importamos el UI Store
+import { useUIStore } from '@/store/useUIStore';
 
 export default function CartDrawer() {
-  // 1. Extraemos estado de DATOS
   const cart = useCartStore((state) => state.cart);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const getTotalPrice = useCartStore((state) => state.getTotalPrice);
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
   
-  // 2. Extraemos estado de UI
   const isCartOpen = useUIStore((state) => state.isCartOpen);
   const closeCart = useUIStore((state) => state.closeCart);
   
   const [mounted, setMounted] = useState(false);
 
-  // Evitar errores de hidratación asegurando renderizado solo en cliente
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Bloquear el scroll de la página cuando el Drawer está abierto
   useEffect(() => {
     if (isCartOpen) {
       document.body.style.overflow = 'hidden';
@@ -39,11 +32,14 @@ export default function CartDrawer() {
     };
   }, [isCartOpen]);
 
+  // SOLUCIÓN ARQUITECTURA: Derivamos el total y la cantidad desde el estado reactivo 'cart'
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+
   if (!mounted) return null;
 
   return (
     <>
-      {/* Overlay oscuro de fondo */}
       {isCartOpen && (
         <div 
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity animate-fadeIn cursor-pointer"
@@ -52,7 +48,6 @@ export default function CartDrawer() {
         />
       )}
 
-      {/* Panel Lateral (Drawer) */}
       <div 
         className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#0f1113] border-l border-gray-800 z-50 transform transition-transform duration-300 ease-in-out flex flex-col shadow-2xl ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
@@ -61,11 +56,10 @@ export default function CartDrawer() {
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
       >
-        {/* Cabecera del Drawer */}
         <div className="px-6 py-5 border-b border-gray-800 flex items-center justify-between bg-[#16191c]">
           <h2 id="cart-drawer-title" className="text-lg font-extrabold text-white flex items-center tracking-wider">
             <ShoppingBag className="w-5 h-5 mr-3 text-[#42938a]" />
-            TU CARRITO ({getTotalItems()})
+            TU CARRITO ({totalItems})
           </h2>
           <button 
             onClick={closeCart}
@@ -76,7 +70,6 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* Lista de Productos o Estado Vacío */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
@@ -98,7 +91,6 @@ export default function CartDrawer() {
             <ul className="space-y-4">
               {cart.map((item) => (
                 <li key={item.id} className="flex gap-4 p-4 bg-[#16191c] border border-gray-800/80 rounded-2xl relative group">
-                  {/* Imagen miniatura */}
                   <div className="w-20 h-20 bg-[#0f1113] rounded-xl border border-gray-800 p-2 flex-shrink-0 relative flex items-center justify-center overflow-hidden">
                     <Image 
                       src={item.imageSrc} 
@@ -109,7 +101,6 @@ export default function CartDrawer() {
                     />
                   </div>
                   
-                  {/* Información del producto */}
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-xs font-bold text-gray-200 line-clamp-2 uppercase tracking-wide">
@@ -125,7 +116,6 @@ export default function CartDrawer() {
                     </div>
                     
                     <div className="flex items-center justify-between mt-3">
-                      {/* Control de cantidad */}
                       <div className="flex items-center bg-[#0f1113] border border-gray-700 rounded-lg">
                         <button 
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -146,9 +136,9 @@ export default function CartDrawer() {
                         </button>
                       </div>
 
-                      {/* Precio total por item (Corregido a formato COP) */}
+                      {/* CRO: Forzamos la localización a es-CO */}
                       <span className="font-extrabold text-[#42938a] text-sm">
-                        ${(item.price * item.quantity).toLocaleString()}
+                        ${(item.price * item.quantity).toLocaleString('es-CO')}
                       </span>
                     </div>
                   </div>
@@ -158,14 +148,13 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Pie del Drawer / Checkout */}
         {cart.length > 0 && (
           <div className="border-t border-gray-800 bg-[#16191c] p-6 space-y-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400 font-medium">Subtotal estimado</span>
-              {/* Precio Total (Corregido a formato COP) */}
+              {/* CRO: Forzamos la localización a es-CO */}
               <span className="text-xl font-extrabold text-white">
-                ${getTotalPrice().toLocaleString()} COP
+                ${totalPrice.toLocaleString('es-CO')} COP
               </span>
             </div>
             

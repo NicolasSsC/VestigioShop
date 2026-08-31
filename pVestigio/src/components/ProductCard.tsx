@@ -1,4 +1,3 @@
-// src/components/ProductCard.tsx
 "use client";
 
 import Image from 'next/image';
@@ -6,6 +5,7 @@ import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { Producto } from '@/types/product';
+import { toast } from 'sonner'; // 1. NUEVO: Importamos toast de sonner
 
 interface ProductCardProps {
   product: Producto;
@@ -23,7 +23,17 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Agregamos al estado global
     addToCart(product);
+    
+    // 2. NUEVO: Disparamos la notificación de éxito
+    toast.success('Agregado al carrito', {
+      description: product.title,
+      style: {
+        borderColor: '#42938a',
+      }
+    });
   };
 
   const productUrl = `/productos/${product.slug}`;

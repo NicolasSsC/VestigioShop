@@ -2,7 +2,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Producto } from '@/types/product';
-import { useUIStore } from './useUIStore'; // Importamos el store de UI
 
 export interface CartItem extends Producto {
   quantity: number;
@@ -42,9 +41,9 @@ export const useCartStore = create<CartStore>()(
             cart: [...currentCart, { ...product, quantity: Math.min(99, safeQuantity) }],
           });
         }
-
-        // COMUNICACIÓN ENTRE STORES: Abrimos el drawer visualmente al añadir
-        useUIStore.getState().openCart();
+        
+        // ❌ Eliminamos la llamada a useUIStore.getState().openCart() 
+        // para permitir que el Toast haga el trabajo de feedback visual silencioso.
       },
 
       removeFromCart: (productId: string) => {

@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -10,20 +9,19 @@ import { useUIStore } from '@/store/useUIStore';
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   
-  // Extraemos de manera limpia separando Datos y UI
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
+  // SOLUCIÓN REACTIVIDAD: Extraemos el arreglo 'cart' directamente. 
+  // Zustand detectará que el arreglo cambió y forzará el re-render.
+  const cart = useCartStore((state) => state.cart);
   const toggleCart = useUIStore((state) => state.toggleCart);
   
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const toggleMobileMenu = useUIStore((state) => state.toggleMobileMenu);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
 
-  // Garantizar hidratación correcta
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Bloquear scroll
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -35,15 +33,16 @@ export default function Navbar() {
     };
   }, [isMobileMenuOpen]);
 
-  // Si no está montado, renderizamos 0 para evitar Layout Shifts e Hydration Errors
-  const totalItems = mounted ? getTotalItems() : 0;
+  // Calculamos el total de ítems derivando del estado reactivo
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
+  // NUEVA ESTRUCTURA DE ENLACES (Orientada a CRO y sin errores 404)
   const navLinks = [
     { name: 'Inicio', href: '/' },
-    { name: 'Productos', href: '/productos' },
-    { name: 'Categorías', href: '/categorias' },
-    { name: 'Sobre Nosotros', href: '/sobre-nosotros' },
-    { name: 'Contacto', href: '/contacto' },
+    { name: 'Catálogo', href: '/productos' },
+    { name: 'Ratones', href: '/productos?categoria=ratones' },
+    { name: 'Teclados', href: '/productos?categoria=teclados' },
+    { name: 'Audio', href: '/productos?categoria=audio' },
   ];
 
   return (
@@ -75,6 +74,7 @@ export default function Navbar() {
             aria-label="Abrir carrito de compras"
           >
             <ShoppingCart className="w-6 h-6" />
+            {/* Solo mostramos el badge si estamos montados (evita error de hidratación) y hay items */}
             {mounted && totalItems > 0 && (
               <span className="absolute top-0 right-0 bg-[#42938a] text-black text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(66,147,138,0.5)] animate-pulse">
                 {totalItems}

@@ -1,4 +1,3 @@
-// src/app/productos/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +5,7 @@ import { mockInventory } from '@/data/mockInventory';
 import Navbar from '@/components/Navbar';
 import AddToCartButton from '@/components/AddToCartButton';
 import { ChevronRight, ShieldCheck, Truck } from 'lucide-react';
+import type { Metadata } from 'next'; // Importación vital para Next.js
 
 interface ProductPageProps {
   params: Promise<{
@@ -13,35 +13,93 @@ interface ProductPageProps {
   }>;
 }
 
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-  // Resolvemos los parámetros asíncronos para Next.js 16
-  const resolvedParams = await params;
+// 1. OPTIMIZACIÓN DE BUILD: Pre-renderiza todas las páginas de producto conocidas.
+export async function generateStaticParams() {
+  return mockInventory.map((product) => ({
+    slug: product.slug,
+  }));
+}
 
-  // Buscamos el producto en nuestro inventario usando el slug resuelto
+// 2. SEO TÉCNICO: Generación dinámica de Meta Tags y OpenGraph
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
   const product = mockInventory.find((p) => p.slug === resolvedParams.slug);
 
-  // Si alguien escribe una URL de un producto que no existe, lanzamos un 404
+  if (!product) {
+    return { title: 'Producto no encontrado | Vestigio' };
+  }
+
+  return {
+    title: `${product.title} | Vestigio`,
+    description: product.description,
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      url: `https://tu-dominio.com/productos/${product.slug}`,
+      siteName: 'Vestigio',
+      images: [
+        {
+          url: product.imageSrc, // Idealmente una URL absoluta
+          width: 800,
+          height: 800,
+          alt: product.title,
+        },
+      ],
+      locale: 'es_CO',
+      type: 'website',
+    },
+  };
+}
+
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  const resolvedParams = await params;
+  const product = mockInventory.find((p) => p.slug === resolvedParams.slug);
+
   if (!product) {
     notFound();
   }
 
+  // 3. STRUCTURED DATA (JSON-LD): Crucial para que Google muestre precio y stock
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    image: product.imageSrc,
+    description: product.description,
+    sku: product.sku,
+    offers: {
+      '@type': 'Offer',
+      url: `https://tu-dominio.com/productos/${product.slug}`,
+      priceCurrency: 'COP',
+      price: product.price,
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#0f1113] text-white">
+      {/* Inyección del Schema de Google */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8 w-full">
-        {/* Breadcrumbs (Navegación SEO) */}
-        <nav className="flex items-center text-xs text-gray-500 font-bold tracking-widest uppercase mb-10">
+        {/* Breadcrumbs (Navegación SEO y UX) */}
+        <nav aria-label="Breadcrumb" className="flex items-center text-xs text-gray-500 font-bold tracking-widest uppercase mb-10">
           <Link href="/" className="hover:text-[#42938a] transition-colors">Inicio</Link>
-          <ChevronRight className="w-3 h-3 mx-2" />
+          <ChevronRight className="w-3 h-3 mx-2" aria-hidden="true" />
           <Link href="/productos" className="hover:text-[#42938a] transition-colors">Catálogo</Link>
-          <ChevronRight className="w-3 h-3 mx-2" />
-          <span className="text-gray-300">{product.category}</span>
+          <ChevronRight className="w-3 h-3 mx-2" aria-hidden="true" />
+          <span className="text-gray-300" aria-current="page">{product.category}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           
-          {/* GALERÍA DE IMÁGENES (Izquierda) */}
+          {/* GALERÍA DE IMÁGENES */}
           <div className="flex flex-col gap-4">
             <div className="w-full aspect-square bg-white rounded-3xl relative flex items-center justify-center p-10 border border-gray-800">
               {product.isNew && (
@@ -52,17 +110,17 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               <div className="relative w-full h-full">
                 <Image 
                   src={product.imageSrc} 
-                  alt={product.title} 
+                  alt={`Fotografía del producto ${product.title}`} 
                   fill
                   className="object-contain filter drop-shadow-2xl"
-                  priority // Prop vital: Le dice a Next.js que cargue esta imagen inmediatamente
+                  priority 
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
             </div>
           </div>
 
-          {/* INFORMACIÓN DEL PRODUCTO (Derecha) */}
+          {/* INFORMACIÓN DEL PRODUCTO */}
           <div className="flex flex-col justify-center">
             <span className="text-[#42938a] font-bold tracking-widest uppercase text-sm mb-2">
               {product.category} • SKU: {product.sku}
@@ -90,7 +148,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               
               {product.stock > 0 ? (
                 <span className="text-xs text-green-500 font-bold tracking-wider mt-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true"></span>
                   EN STOCK ({product.stock} disponibles)
                 </span>
               ) : (
@@ -100,17 +158,16 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            {/* Inyectamos nuestro Client Component aquí */}
             <AddToCartButton product={product} />
 
             {/* Badges de Confianza (CRO) */}
             <div className="grid grid-cols-2 gap-4 mt-8">
               <div className="flex items-center gap-3 text-gray-400">
-                <Truck className="w-5 h-5 text-[#42938a]" />
+                <Truck className="w-5 h-5 text-[#42938a]" aria-hidden="true" />
                 <span className="text-xs font-bold uppercase tracking-wider">Envíos a todo el país</span>
               </div>
               <div className="flex items-center gap-3 text-gray-400">
-                <ShieldCheck className="w-5 h-5 text-[#42938a]" />
+                <ShieldCheck className="w-5 h-5 text-[#42938a]" aria-hidden="true" />
                 <span className="text-xs font-bold uppercase tracking-wider">Garantía Oficial</span>
               </div>
             </div>
