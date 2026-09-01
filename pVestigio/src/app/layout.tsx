@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawer from "@/components/CartDrawer";
-import { Toaster } from "sonner"; // 1. NUEVO: Importamos el Toaster
+import Footer from "@/components/Footer"; // 1. NUEVO: Importamos el Footer
+import { Toaster } from "sonner";
 import "./globals.css";
 
 // Fuentes optimizadas por Next.js
@@ -66,10 +67,13 @@ export default function RootLayout({
         {/* Renderizado de las vistas principales */}
         {children}
 
+        {/* 2. NUEVO: Footer global */}
+        <Footer />
+
         {/* Cart Drawer global inyectado para que esté disponible en toda la app */}
         <CartDrawer />
         
-        {/* 2. NUEVO: Configuración del Toaster a nivel global estilizado para el tema oscuro */}
+        {/* Configuración del Toaster a nivel global estilizado para el tema oscuro */}
         <Toaster 
           position="bottom-right" 
           toastOptions={{
