@@ -1,8 +1,55 @@
 import Link from "next/link";
 import { ArrowRight, Keyboard, Mouse, Headphones, ShieldCheck, Zap, Truck } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import Navbar from "@/components/Navbar";
 import { mockInventory } from "@/data/mockInventory"; // 1. CORREGIDO: Ahora usamos el nombre exacto exportado
 import { Producto } from "@/types/product"; 
+
+/**
+ * Componente BannerPromocional
+ * Barra de anuncio superior con estética gaming oscura, efectos de luz sutiles
+ * y llamado de atención responsivo para incentivar la compra mediante envío gratuito.
+ */
+function BannerPromocional() {
+  return (
+    <aside 
+      aria-label="Anuncio promocional" 
+      className="relative bg-[#16191c] border-b border-[#42938a]/30 py-2.5 px-4 sm:px-6 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.35)] z-40"
+    >
+      {/* Efecto de luz ambiental gamer sutil */}
+      <div 
+        aria-hidden="true" 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 max-w-2xl h-8 bg-[#42938a]/10 blur-xl rounded-full pointer-events-none" 
+      />
+
+      <div className="max-w-7xl mx-auto flex items-center justify-center relative z-10">
+        <Link 
+          href="/productos" 
+          className="group flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-center text-xs sm:text-sm text-gray-300 hover:text-white transition-colors"
+        >
+          {/* Badge con ícono temático */}
+          <span className="inline-flex items-center gap-1.5 bg-[#42938a]/15 text-[#42938a] border border-[#42938a]/40 px-2.5 py-0.5 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-[0_0_12px_rgba(66,147,138,0.25)]">
+            <Truck className="w-3.5 h-3.5 text-[#42938a]" />
+            <span>Envío Gratis</span>
+          </span>
+
+          {/* Texto principal del beneficio */}
+          <span className="font-medium">
+            a toda <span className="text-white font-bold">Colombia</span> en compras superiores a{" "}
+            <span className="text-[#42938a] font-black tracking-wide bg-[#42938a]/10 px-2 py-0.5 rounded border border-[#42938a]/30 shadow-[0_0_8px_rgba(66,147,138,0.15)]">
+              $200.000 COP
+            </span>
+          </span>
+
+          {/* Microinteracción / Call To Action para pantallas medianas y grandes */}
+          <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-gray-400 group-hover:text-[#42938a] uppercase tracking-widest transition-all sm:ml-1">
+            Ver catálogo <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+          </span>
+        </Link>
+      </div>
+    </aside>
+  );
+}
 
 export default function HomePage() {
   // 2. CORREGIDO: Usamos mockInventory para extraer los 4 primeros
@@ -10,9 +57,12 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* 0. NAVEGACIÓN Y BANNER PROMOCIONAL */}
+      <Navbar />
+      <BannerPromocional />
       
       {/* 1. HERO SECTION (Impacto visual) */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden border-b border-gray-800/50">
+      <section className="relative pt-20 pb-20 md:pt-32 md:pb-32 overflow-hidden border-b border-gray-800/50">
         {/* Efecto de luz de fondo (Glow) */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#42938a]/15 blur-[120px] rounded-full pointer-events-none" />
 
