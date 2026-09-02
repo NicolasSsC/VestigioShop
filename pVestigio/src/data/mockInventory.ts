@@ -14,7 +14,8 @@ export const mockInventory: Producto[] = [
     compareAtPrice: 179900, // Ajustado para mantener el diseño de descuento
     stock: 15,
     imageSrc: "/images/Logitech-G502-Hero-Pesas.png",
-    isNew: true,
+    isNew: false,
+    badge: "Más Vendido",
   },
   {
     id: "m-002",
@@ -49,6 +50,8 @@ export const mockInventory: Producto[] = [
     compareAtPrice: 139900, // Ajustado para mantener el diseño de descuento
     stock: 5,
     imageSrc: "/images/MouseInalámbricoAttackSharkX11.png",
+    isNew: true,
+    badge: "Nuevo",
   },
   {
     id: "m-005",
@@ -84,6 +87,7 @@ export const mockInventory: Producto[] = [
     price: 139900,
     stock: 12,
     imageSrc: "/images/AtatackSharkAK820Blanco.png",
+    badge: "Pro Choice",
   },
   {
     id: "k-002",

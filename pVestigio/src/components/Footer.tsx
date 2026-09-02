@@ -2,91 +2,171 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// 1. CORRECCIÓN: Quitamos las redes sociales de aquí. Solo dejamos los íconos genéricos.
-import { ShieldCheck, CreditCard, Truck } from "lucide-react";
+import { ShieldCheck, Truck, Headphones, Gamepad2, ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   const pathname = usePathname();
 
+  // En la vista de Checkout se oculta para un flujo de conversión limpio (CRO)
   if (pathname.startsWith('/checkout')) {
     return null;
   }
 
   return (
-    <footer className="bg-[#16191c] border-t border-gray-800 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
+    <footer className="w-full bg-[#0d0f12] border-t border-gray-800/80 text-gray-400 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
         
         {/* GRID PRINCIPAL */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
           
-          {/* Columna 1: Marca */}
-          <div className="flex flex-col">
-            <Link href="/" className="text-[#42938a] font-black text-2xl tracking-wider flex items-center mb-6">
-              <span className="text-3xl mr-1">V</span> VESTIGIO
+          {/* Columna 1: Marca & Descripción */}
+          <div className="flex flex-col items-start">
+            <Link 
+              href="/" 
+              className="text-[#42938a] font-black text-2xl tracking-wider flex items-center gap-1.5 mb-4 group"
+            >
+              <span className="text-3xl font-black text-[#42938a] group-hover:drop-shadow-[0_0_8px_rgba(66,147,138,0.5)] transition-all">
+                V
+              </span>
+              <span className="text-white tracking-widest group-hover:text-[#42938a] transition-colors">
+                VESTIGIO
+              </span>
             </Link>
+
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#16191c] border border-gray-800 text-[11px] font-bold text-[#42938a] uppercase tracking-wider mb-4">
+              <Gamepad2 className="w-3.5 h-3.5" />
+              Equipamiento de alto rendimiento
+            </div>
+
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Equipamiento de alto rendimiento para jugadores exigentes. Domina el juego con tecnología de precisión diseñada para la victoria.
+              Selección premium de periféricos para gamers y creadores exigentes. Teclados mecánicos, ratones de alta precisión y audio inmersivo diseñados para dominar cada partida.
             </p>
+
+            {/* Redes Sociales con hover #42938a */}
             <div className="flex gap-4 text-gray-500">
-              {/* 2. Usamos nuestros propios componentes SVG de redes sociales */}
-              <a href="#" className="hover:text-[#42938a] transition-colors"><InstagramIcon className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-[#42938a] transition-colors"><TwitterIcon className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-[#42938a] transition-colors"><TwitchIcon className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-[#42938a] transition-colors"><YoutubeIcon className="w-5 h-5" /></a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#42938a] transition-colors">
+                <InstagramIcon className="w-5 h-5" />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X" className="hover:text-[#42938a] transition-colors">
+                <TwitterIcon className="w-5 h-5" />
+              </a>
+              <a href="https://twitch.tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch" className="hover:text-[#42938a] transition-colors">
+                <TwitchIcon className="w-5 h-5" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-[#42938a] transition-colors">
+                <YoutubeIcon className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
-          {/* Columna 2: Tienda */}
+          {/* Columna 2: Enlaces Rápidos */}
           <div>
-            <h4 className="text-white font-black uppercase tracking-widest text-sm mb-6">Tienda</h4>
-            <ul className="space-y-4 text-sm text-gray-400 font-medium">
-              <li><Link href="/productos" className="hover:text-[#42938a] transition-colors">Todo el Catálogo</Link></li>
-              <li><Link href="/productos?category=teclados" className="hover:text-[#42938a] transition-colors">Teclados Mecánicos</Link></li>
-              <li><Link href="/productos?category=ratones" className="hover:text-[#42938a] transition-colors">Ratones Gaming</Link></li>
-              <li><Link href="/productos?category=audio" className="hover:text-[#42938a] transition-colors">Audio y Auriculares</Link></li>
-              <li><Link href="/productos?category=alfombrillas" className="hover:text-[#42938a] transition-colors">Alfombrillas XL</Link></li>
+            <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#42938a]" />
+              Enlaces Rápidos
+            </h4>
+            <ul className="space-y-3.5 text-sm font-medium">
+              <li>
+                <Link href="/productos" className="hover:text-[#42938a] transition-colors flex items-center justify-between group">
+                  <span>Catálogo Completo</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#42938a]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/productos?category=teclados" className="hover:text-[#42938a] transition-colors flex items-center justify-between group">
+                  <span>Teclados Mecánicos</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#42938a]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/productos?category=ratones" className="hover:text-[#42938a] transition-colors flex items-center justify-between group">
+                  <span>Ratones Gaming</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#42938a]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/productos?category=audio" className="hover:text-[#42938a] transition-colors flex items-center justify-between group">
+                  <span>Audio & Auriculares</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#42938a]" />
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Columna 3: Soporte */}
+          {/* Columna 3: Soporte & Ayuda */}
           <div>
-            <h4 className="text-white font-black uppercase tracking-widest text-sm mb-6">Soporte</h4>
-            <ul className="space-y-4 text-sm text-gray-400 font-medium">
-              <li><a href="#" className="hover:text-[#42938a] transition-colors">Centro de Ayuda</a></li>
-              <li><a href="#" className="hover:text-[#42938a] transition-colors">Estado de mi pedido</a></li>
-              <li><a href="#" className="hover:text-[#42938a] transition-colors">Políticas de Envío</a></li>
-              <li><a href="#" className="hover:text-[#42938a] transition-colors">Garantías y Devoluciones</a></li>
-              <li><a href="#" className="hover:text-[#42938a] transition-colors">Contáctanos</a></li>
+            <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#42938a]" />
+              Soporte
+            </h4>
+            <ul className="space-y-3.5 text-sm font-medium">
+              <li>
+                <Link href="#" className="hover:text-[#42938a] transition-colors flex items-center gap-1.5">
+                  <Headphones className="w-4 h-4 text-[#42938a]" />
+                  <span>Centro de Ayuda</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-[#42938a] transition-colors">
+                  Términos y Condiciones
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-[#42938a] transition-colors">
+                  Políticas de Envío
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-[#42938a] transition-colors">
+                  Garantías y Devoluciones
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Columna 4: Confianza */}
+          {/* Columna 4: Confianza y Garantía */}
           <div>
-            <h4 className="text-white font-black uppercase tracking-widest text-sm mb-6">Compra Segura</h4>
+            <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#42938a]" />
+              Experiencia Segura
+            </h4>
             <div className="space-y-4">
-              <div className="flex items-center gap-3 text-gray-400">
-                <ShieldCheck className="w-8 h-8 text-[#42938a] flex-shrink-0" />
-                <p className="text-xs">Garantía oficial en todos nuestros productos.</p>
+              <div className="flex items-start gap-3 bg-[#16191c]/70 border border-gray-800/80 p-3 rounded-xl">
+                <ShieldCheck className="w-5 h-5 text-[#42938a] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h5 className="text-xs font-bold text-white uppercase tracking-wider">Garantía Oficial</h5>
+                  <p className="text-[11px] text-gray-400">2 años de cobertura oficial en hardware.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <Truck className="w-8 h-8 text-[#42938a] flex-shrink-0" />
-                <p className="text-xs">Envíos asegurados a toda Colombia.</p>
-              </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <CreditCard className="w-8 h-8 text-[#42938a] flex-shrink-0" />
-                <p className="text-xs">Pagos encriptados de extremo a extremo.</p>
+              <div className="flex items-start gap-3 bg-[#16191c]/70 border border-gray-800/80 p-3 rounded-xl">
+                <Truck className="w-5 h-5 text-[#42938a] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h5 className="text-xs font-bold text-white uppercase tracking-wider">Envíos Colombia</h5>
+                  <p className="text-[11px] text-gray-400">Despachos rápidos y asegurados.</p>
+                </div>
               </div>
             </div>
           </div>
 
         </div>
 
-        {/* BARRA INFERIOR (Copyright) */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-600 font-medium uppercase tracking-wider">
-          <p>&copy; {new Date().getFullYear()} Vestigio Gaming. Todos los derechos reservados.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-[#42938a] transition-colors">Términos</a>
-            <a href="#" className="hover:text-[#42938a] transition-colors">Privacidad</a>
+        {/* BARRA INFERIOR - COPYRIGHT */}
+        <div className="border-t border-gray-800/70 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium">
+          <p className="text-center sm:text-left">
+            &copy; 2026 <span className="text-white font-bold">VESTIGIO</span>. Todos los derechos reservados.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <Link href="/productos" className="hover:text-[#42938a] transition-colors">
+              Catálogo
+            </Link>
+            <span className="text-gray-700 hidden sm:inline">•</span>
+            <Link href="#" className="hover:text-[#42938a] transition-colors">
+              Términos y Condiciones
+            </Link>
+            <span className="text-gray-700 hidden sm:inline">•</span>
+            <Link href="#" className="hover:text-[#42938a] transition-colors">
+              Soporte
+            </Link>
           </div>
         </div>
 
@@ -96,7 +176,7 @@ export default function Footer() {
 }
 
 /* =====================================================================
-   COMPONENTES SVG INLINE (Reemplazo de los logos eliminados de Lucide)
+   ICONOS SVG DE REDES SOCIALES
    ===================================================================== */
 
 const InstagramIcon = ({ className }: { className?: string }) => (

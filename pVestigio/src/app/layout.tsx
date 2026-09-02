@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawer from "@/components/CartDrawer";
-import Footer from "@/components/Footer"; // 1. NUEVO: Importamos el Footer
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -66,9 +65,6 @@ export default function RootLayout({
         
         {/* Renderizado de las vistas principales */}
         {children}
-
-        {/* 2. NUEVO: Footer global */}
-        <Footer />
 
         {/* Cart Drawer global inyectado para que esté disponible en toda la app */}
         <CartDrawer />

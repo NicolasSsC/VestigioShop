@@ -24,6 +24,7 @@ export interface Producto {
   imageSrc: string;
   gallery?: string[]; // NUEVO: Array para las fotos de la página de detalle
   isNew?: boolean;
+  badge?: string; // NUEVO: Etiqueta flotante personalizada (ej. "Más Vendido", "Nuevo", "Pro Choice")
   stock: number; // NUEVO: Para deshabilitar el botón de compra si llega a 0
   variants?: ProductVariant[]; // NUEVO: Opcional, por si el producto tiene opciones
   features?: string[]; // NUEVO: Bullet points de especificaciones técnicas

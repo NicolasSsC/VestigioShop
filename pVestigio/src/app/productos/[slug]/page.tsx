@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { mockInventory } from '@/data/mockInventory';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import AddToCartButton from '@/components/AddToCartButton';
 import { ChevronRight, ShieldCheck, Truck } from 'lucide-react';
 import type { Metadata } from 'next'; // Importación vital para Next.js
@@ -175,6 +176,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

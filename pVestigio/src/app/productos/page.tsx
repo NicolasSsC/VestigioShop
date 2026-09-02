@@ -1,5 +1,6 @@
 // src/app/productos/page.tsx
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import CatalogFilters from '@/components/CatalogFilters';
 import { mockInventory } from '@/data/mockInventory';
@@ -101,6 +102,8 @@ export default async function ProductosPage({ searchParams }: ProductosPageProps
           </div>
         </section>
       </main>
+      
+      <Footer />
     </div>
   );
 }

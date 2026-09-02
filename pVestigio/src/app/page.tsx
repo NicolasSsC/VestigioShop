@@ -1,7 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Keyboard, Mouse, Headphones, ShieldCheck, Zap, Truck } from "lucide-react";
+import { ArrowRight, Keyboard, Mouse, Headphones, ShieldCheck, Zap, Truck, Flame, Sparkles } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import FAQSection from "@/components/FAQSection";
 import { mockInventory } from "@/data/mockInventory"; // 1. CORREGIDO: Ahora usamos el nombre exacto exportado
 import { Producto } from "@/types/product"; 
 
@@ -52,11 +55,16 @@ function BannerPromocional() {
 }
 
 export default function HomePage() {
-  // 2. CORREGIDO: Usamos mockInventory para extraer los 4 primeros
-  const featuredProducts = mockInventory.slice(0, 4);
+  // 1. Extraemos productos representativos de diferentes categorías para la sección destacada
+  // Logitech G502 (Mouse/Más Vendido), Attack Shark X11 (Nuevo), Ajazz AK820 (Teclado Pro Choice), AOC RGB (Audio)
+  const featuredProductIds = ["m-001", "m-004", "k-001", "a-001"];
+  const featuredProducts = mockInventory.filter((p) => featuredProductIds.includes(p.id));
+  
+  // Fallback seguro en caso de que cambien los IDs
+  const displayProducts = featuredProducts.length === 4 ? featuredProducts : mockInventory.slice(0, 4);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#0f1113] text-[#ededed]">
       {/* 0. NAVEGACIÓN Y BANNER PROMOCIONAL */}
       <Navbar />
       <BannerPromocional />
@@ -162,25 +170,56 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. PRODUCTOS DESTACADOS */}
-      <section className="py-10 pb-32 max-w-7xl mx-auto px-6 w-full border-t border-gray-800/50">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
+      {/* 4. SECCIÓN DE PRODUCTOS DESTACADOS (Featured Products) */}
+      <section className="py-16 max-w-7xl mx-auto px-6 w-full border-t border-gray-800/50 relative">
+        {/* Glow sutil */}
+        <div 
+          aria-hidden="true" 
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-3/4 max-w-3xl h-64 bg-[#42938a]/5 blur-[120px] rounded-full pointer-events-none" 
+        />
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4 relative z-10">
           <div>
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">Destacados</h2>
-            <p className="text-gray-400 mt-2">El hardware preferido por los profesionales.</p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#16191c] border border-gray-800 text-[11px] font-black text-[#42938a] uppercase tracking-widest mb-3">
+              <Flame className="w-3.5 h-3.5 text-[#42938a]" />
+              Top Performance
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">
+              Productos <span className="text-[#42938a]">Destacados</span>
+            </h2>
+            <p className="text-gray-400 mt-2 text-sm sm:text-base">
+              El hardware preferido por los profesionales y la comunidad gaming.
+            </p>
           </div>
-          <Link href="/productos" className="text-[#42938a] font-bold text-sm uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1">
-            Ver todo el inventario <ArrowRight className="w-4 h-4" />
+          
+          <Link 
+            href="/productos" 
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#16191c] border border-gray-800 hover:border-[#42938a] text-[#42938a] hover:text-white text-xs font-black uppercase tracking-widest transition-all"
+          >
+            Ver todo el catálogo <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* Reutilizamos nuestro potente componente ProductCard */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((product: Producto) => (
+        {/* Grilla Responsiva de Productos Destacados */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+          {displayProducts.map((product: Producto) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
+
+      {/* 5. SECCIÓN DE RESEÑAS Y TESTIMONIOS (Social Proof) */}
+      <section className="border-t border-gray-800/50 bg-[#0d0f12]/60">
+        <TestimonialsSection />
+      </section>
+
+      {/* 6. SECCIÓN DE PREGUNTAS FRECUENTES (FAQ Interactiva) */}
+      <section className="border-t border-gray-800/50">
+        <FAQSection />
+      </section>
+
+      {/* 7. FOOTER (Pie de página gaming) */}
+      <Footer />
 
     </div>
   );
