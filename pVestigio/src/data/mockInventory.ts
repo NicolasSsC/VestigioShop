@@ -122,7 +122,7 @@ export const mockInventory: Producto[] = [
     description: "Alfombrilla decorativa para escritorio con diseño ilustrado de flores de cerezo (sakura) y gatos.",
     price: 29900,
     stock: 45,
-    imageSrc: "/images/74a00692ba4f4fbaab5a1555b3e9f392-goods.avif",
+    imageSrc: "/images/b7771be750c84962899ec46622bf95b1-goods.avif",
   },
 
   // --- AUDIO ---
@@ -135,6 +135,6 @@ export const mockInventory: Producto[] = [
     description: "Sistema de altavoces compactos para escritorio con sonido estéreo nítido, refuerzo de graves e iluminación RGB.",
     price: 64900,
     stock: 30,
-    imageSrc: "/images/Altavoces Gaming de Escritorio AOC RGB.jpg",
+    imageSrc: "/images/2f07d9f6-91e9-44b2-b0e7-5175f6b050e1.avif",
   },
 ];
