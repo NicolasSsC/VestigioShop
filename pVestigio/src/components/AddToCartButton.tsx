@@ -14,7 +14,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
 
   // 2. NUEVO: Función manejadora para el carrito y el feedback visual
   const handleAddToCart = () => {
-    addToCart(product);
+    addToCart(product.id);
     
     toast.success('Agregado al carrito', {
       description: product.title,

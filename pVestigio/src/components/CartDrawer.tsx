@@ -5,10 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { useHydratedCart } from '@/hooks/useHydratedCart';
 import { useUIStore } from '@/store/useUIStore';
 
 export default function CartDrawer() {
-  const cart = useCartStore((state) => state.cart);
+  const { hydratedItems: cart, cartTotal: totalPrice, totalItems } = useHydratedCart();
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   
@@ -33,8 +34,8 @@ export default function CartDrawer() {
   }, [isCartOpen]);
 
   // SOLUCIÓN ARQUITECTURA: Derivamos el total y la cantidad desde el estado reactivo 'cart'
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  
+  
 
   if (!mounted) return null;
 

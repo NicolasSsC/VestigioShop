@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ShoppingCart } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
+import { useHydratedCart } from '@/hooks/useHydratedCart';
 import { useUIStore } from '@/store/useUIStore';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ui/ThemeToggle'; // 👈 Asegúrate de importar tu ThemeToggle
@@ -12,10 +12,10 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   
-  const cart = useCartStore((state) => state.cart);
+  const { totalItems } = useHydratedCart();
   const openCart = useUIStore((state) => state.openCart); 
   
-  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+  
 
   useEffect(() => {
     setIsMobileMenuOpen(false);

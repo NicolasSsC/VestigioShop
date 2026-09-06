@@ -1,20 +1,18 @@
 // src/store/useCartStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Producto } from '@/types/product';
 
-export interface CartItem extends Producto {
+export interface CartItem {
+  productId: string;
   quantity: number;
 }
 
 interface CartStore {
   cart: CartItem[];
-  addToCart: (product: Producto, quantityToAdd?: number) => void;
+  addToCart: (productId: string) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  getTotalItems: () => number;
-  getTotalPrice: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -23,31 +21,27 @@ export const useCartStore = create<CartStore>()(
       cart: [],
 
       // --- DATOS Y NEGOCIO ---
-      addToCart: (product: Producto, quantityToAdd = 1) => {
-        const safeQuantity = Math.max(1, quantityToAdd);
+      addToCart: (productId: string) => {
         const currentCart = get().cart;
-        const existingItem = currentCart.find((item) => item.id === product.id);
+        const existingItem = currentCart.find((item) => item.productId === productId);
 
         if (existingItem) {
           set({
             cart: currentCart.map((item) =>
-              item.id === product.id
-                ? { ...item, quantity: Math.min(99, item.quantity + safeQuantity) }
+              item.productId === productId
+                ? { ...item, quantity: item.quantity + 1 }
                 : item
             ),
           });
         } else {
-          set({ 
-            cart: [...currentCart, { ...product, quantity: Math.min(99, safeQuantity) }],
+          set({
+            cart: [...currentCart, { productId, quantity: 1 }],
           });
         }
-        
-        // ❌ Eliminamos la llamada a useUIStore.getState().openCart() 
-        // para permitir que el Toast haga el trabajo de feedback visual silencioso.
       },
 
       removeFromCart: (productId: string) => {
-        set({ cart: get().cart.filter((item) => item.id !== productId) });
+        set({ cart: get().cart.filter((item) => item.productId !== productId) });
       },
 
       updateQuantity: (productId: string, quantity: number) => {
@@ -55,35 +49,34 @@ export const useCartStore = create<CartStore>()(
           get().removeFromCart(productId);
           return;
         }
-        if (isNaN(quantity)) return;
 
         set({
           cart: get().cart.map((item) =>
-            item.id === productId 
-              ? { ...item, quantity: Math.min(99, quantity) }
+            item.productId === productId
+              ? { ...item, quantity }
               : item
           ),
         });
       },
 
       clearCart: () => set({ cart: [] }),
-
-      getTotalItems: () => {
-        return get().cart.reduce((total, item) => total + item.quantity, 0);
-      },
-
-      getTotalPrice: () => {
-        return get().cart.reduce(
-          (total, item) => total + (item.price * item.quantity),
-          0
-        );
-      },
     }),
     {
       name: 'vestigio-cart-storage',
-      // Mantenemos partialize por seguridad para solo guardar los productos en localStorage
-      partialize: (state) => ({ cart: state.cart }), 
-      version: 1, 
+      version: 2, // Subimos la versión porque cambiamos la estructura de los datos
+      migrate: (persistedState: any, version: number) => {
+        // Si venimos de la versión 1 (donde guardábamos el producto completo)
+        if (version === 0 || version === 1) {
+          if (persistedState && Array.isArray(persistedState.cart)) {
+            // Convertimos los objetos completos a entidades anémicas
+            persistedState.cart = persistedState.cart.map((oldItem: any) => ({
+              productId: oldItem.id || oldItem.productId,
+              quantity: oldItem.quantity || 1,
+            }));
+          }
+        }
+        return persistedState;
+      },
     }
   )
 );

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Lock, Loader2 } from 'lucide-react';
-import { useCartStore } from '@/store/useCartStore';
+import { useHydratedCart } from '@/hooks/useHydratedCart';
 import { toast } from 'sonner';
 
 export default function OrderSummary() {
@@ -12,13 +12,13 @@ export default function OrderSummary() {
   const [isProcessing, setIsProcessing] = useState(false);
   
   const router = useRouter();
-  const cart = useCartStore((state) => state.cart);
+  const { hydratedItems: cart, cartTotal: totalPrice } = useHydratedCart();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  
   const costoEnvio: number = 0; 
 
   // FUNCIÓN CORREGIDA (Sin duplicados)

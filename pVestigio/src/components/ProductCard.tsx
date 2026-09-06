@@ -23,7 +23,7 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product);
+    addToCart(product.id);
     toast.success('Agregado al carrito', {
       description: product.title,
       style: { borderColor: '#42938a' }

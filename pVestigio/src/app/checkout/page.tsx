@@ -14,7 +14,7 @@ import {
   CheckCircle2,
   PackageCheck
 } from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
+import { useHydratedCart } from "@/hooks/useHydratedCart";
 import CheckoutForm from "@/components/CheckoutForm";
 
 const FREE_SHIPPING_THRESHOLD = 200000;
@@ -24,7 +24,7 @@ export default function CheckoutPage() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   
-  const cart = useCartStore((state) => state.cart);
+  const { hydratedItems: cart, cartTotal: subtotal } = useHydratedCart();
 
   useEffect(() => {
     setMounted(true);
@@ -42,7 +42,7 @@ export default function CheckoutPage() {
   }
 
   // Cálculos Financieros y de Envío
-  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const shippingCost = isFreeShipping ? 0 : STANDARD_SHIPPING_COST;
   const total = subtotal + shippingCost;
