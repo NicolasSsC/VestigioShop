@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ShoppingCart } from 'lucide-react';
+import { Menu, X, ShoppingCart, User } from 'lucide-react';
 import { useHydratedCart } from '@/hooks/useHydratedCart';
 import { useUIStore } from '@/store/useUIStore';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import SearchBar from '@/components/SearchBar'; // 👈 Nuestro nuevo componente
+import SearchBar from '@/components/SearchBar';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,6 +22,7 @@ export default function Navbar() {
 
   const closeMenu = () => setIsMobileMenuOpen(false);
 
+  // Ocultamos el navbar en el checkout (opcional, dependiendo de tu diseño)
   if (pathname.startsWith('/checkout')) {
     return null;
   }
@@ -54,6 +55,15 @@ export default function Navbar() {
           <div className="hidden md:block">
              <ThemeToggle />
           </div>
+
+          {/* BOTÓN LOGIN / USUARIO */}
+          <Link 
+            href="/login" 
+            className="p-2 text-gray-600 dark:text-gray-400 hover:text-[#42938a] dark:hover:text-[#42938a] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#42938a] rounded-full"
+            aria-label="Iniciar Sesión"
+          >
+            <User className="w-6 h-6" />
+          </Link>
 
           {/* BOTÓN CARRITO */}
           <button 
